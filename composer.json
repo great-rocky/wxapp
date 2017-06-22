@@ -1,0 +1,10 @@
+{
+    "name": "rocky/wxapp",
+    "authors": [
+        {
+            "name": "秦书国",
+            "email": "qsg@wo10000.com"
+        }
+    ],
+    "require": {}
+}
