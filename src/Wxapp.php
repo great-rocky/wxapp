@@ -1,13 +1,28 @@
 <?php
+
 namespace Rocky\Wxapp;
 
-/**
- * Created by PhpStorm.
- * User: qinshuguo
- * Date: 2017/6/22
- * Time: 17:16
- */
+
 class Wxapp
 {
+    public static function codeToSession($appId, $appSecret, $code)
+    {
+        //doc: https://mp.weixin.qq.com/debug/wxadoc/dev/api/api-login.html#wxloginobject
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid=$appId&secret=$appSecret&js_code=$code&grant_type=authorization_code";
+        return json_decode(file_get_contents($url), true);
+    }
 
+    public static function decryptOpenGId($appId, $sessionKey, $encryptedData, $iv)
+    {
+        $r = self::decrypt($appId, $sessionKey, $encryptedData, $iv);
+        $data = json_decode($r['data']);
+        return isset($data->openGId) ? $data->openGId : false;
+    }
+
+    public static function decrypt($appId, $sessionKey, $encryptedData, $iv)
+    {
+        $pc = new WXBizDataCrypt($appId, $sessionKey);
+        $errCode = $pc->decryptData($encryptedData, $iv, $data);
+        return ['errCode' => $errCode, 'data' => $data];
+    }
 }
