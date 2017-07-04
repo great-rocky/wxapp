@@ -19,8 +19,15 @@ class Wxapp
         return isset($data->openGId) ? $data->openGId : false;
     }
 
+    public static function decryptUserInfo($appId, $sessionKey, $encryptedData, $iv)
+    {
+        $r = self::decrypt($appId, $sessionKey, $encryptedData, $iv);
+        return json_decode($r['data'], true);
+    }
+
     public static function decrypt($appId, $sessionKey, $encryptedData, $iv)
     {
+        //doc: https://mp.weixin.qq.com/debug/wxadoc/dev/api/signature.html
         $pc = new WXBizDataCrypt($appId, $sessionKey);
         $errCode = $pc->decryptData($encryptedData, $iv, $data);
         return ['errCode' => $errCode, 'data' => $data];
